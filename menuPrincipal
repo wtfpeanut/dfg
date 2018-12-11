@@ -1,0 +1,325 @@
+<?php
+include("db/conexao.php");
+include("filtro.php");
+/*
+$get_dados = "SELECT 'usuarios' AS STATUS, 
+	   'RG' AS SEDE, 
+	   'CLT' AS TIPO, 
+	   'Fabiano Silveira' AS NOME, 
+	   '(51) 9 9999-9999' AS FONE, 
+	   'Programador' AS CARGO,
+	   'Gestor P.' AS SOLICITANTE, 
+	   '1.500' AS REMUNERACAO_TOTAL, 
+	   'Cliente X' AS CLENTE, 
+	   'UX WW' AS PROJETO, 
+	   'email@email.com' AS EMAIL,
+	   'Ok' AS CURRICULUM
+FROM DUAL";
+ */
+
+
+
+$resultado = mysqli_query($conn, "SELECT * from admissao_dominio");
+/* $usuarios = mysql_fetch_assoc($resultado); */
+
+?>
+
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RH Contratações</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/arquivo.css">
+    <link rel="stylesheet" href="css/menuPrincipal.css">
+
+
+
+</head>
+
+<body>
+    <header class="site-header">
+        <img src="http://www.compasso.com.br/wp-content/uploads/2018/04/Logo_Compasso_01-mini.png" alt="Compasso Tecnologia">
+        <nav>
+            <a class='nav inicio' href='menuPrincipal.php'>Início</a>
+            <a class='nav filter' >Filtragem</a>
+            <div class="dropdown">
+                <a class="dropbtn nav">Emails <span class='caret'></span></a>
+                <div class="dropdown-content">
+                  <a href="emails/MSG/admissaoPOA.html">5. Documentos Admissão POA</a>
+                  <a href="emails/MSG/admissãoRG.html">5.1 Documentos Admissão RG</a>
+                  <a href="emails/MSG/admissãoPF.html">5.2 Documentos de Admissão PF</a>
+                  <a href="emails/MSG/admissãoERE.html">5.3 Documentos de Admissão ERE</a>
+                  <a href="emails/MSG/admissãoCWB.html">5.4 Documentos de Admissão CWB</a>
+                  <a href="emails/MSG/admissãoSP.html">5.5 Documentos de Admissão SP</a>
+                  <a href="emails/MSG/admissãoFNL.HTML">5.6 Documentos Admissão FNL</a>
+                  <a href="emails/MSG/primeiro-alerta.html">7. ALERTA - 1ª Experiência expira em 20 dias</a>
+                  <a href="emails/MSG/segundo-alerta.html">7.1 ALERTA - 2ª Experiência expira em 20 dias</a>
+                  <a href="emails/MSG/novo-acesso.html">8. Novo Acesso</a>
+                  <a href="emails/MSG/acesso-liberado.html">9. Acessos Liberado</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class='menu-inicial'>
+            <h2 id='nome'>Plataforma Admissão Domínio</h2>
+        </section>
+        <section class='inputs panel-body display campo-filtro estruct'>
+            <h2 id='filtro'>Filtro</h2>
+            <fieldset>
+            <form id='form-filtrar'method="POST" action="<?php echo $_SERVER['PHP_SELF'];?>">
+                    <div>
+                        <div>
+                            <label for="STATUS">Status</label>
+                            <select id="STATUS" nome="STATUS" class="form-control campo-filter">
+                                <option value="" selected="selected"></option>
+                                <option value="AGUARDAR ACEITE">AGUARDAR ACEITE</option>
+                                <option value="FINALIZADO">FINALIZADO</option>
+                                <option value="DESISTENCIA">DESISTENCIA</option>
+                                <option value="EM ANDAMENTO">EM ANDAMENTO</option>
+                                <option value="EM CONTRATO">EM CONTRATO</option>
+                                <option value="EM VALIDAÇÃO">EM VALIDAÇÃO</option>
+                                <option value="RETORNO DOCS">RETORNO DOCS</option>
+                                <option value="CONTATO REALIZADO">CONTATO REALIZADO</option>
+                                <option value="RETORNO PENDENT">RETORNO PENDENTE</option>
+                                <option value="RECUSADO">RECUSADO</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="SEDE">Sede</label>
+                            <select id="SEDE" nome="SEDE" class="form-control campo-filter">
+                                <option value="" selected="selected"></option>
+                                <option value="CWB">CWB</option>
+                                <option value="ERE">ERE</option>
+                                <option value="PF">PF</option>
+                                <option value="POA">POA</option>
+                                <option value="RG">RG</option>
+                                <option value="SP">SP</option>
+                                <option value="FLN">FLN</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="TIPO">Tipo</label>
+                            <select id="TIPO" nome="TIPO" class="form-control campo-filter">
+                                <option value="" selected="selected"></option>
+                                <option value="CLT">CLT</option>
+                                <option value="CC">CC</option>
+                                <option value="HO">HO</option>
+                                <option value="TEMP">TEMP</option>
+                                <option value="APDZ">APDZ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="SOLICITANTE">Solicitante</label>
+                            <input type="text" id='SOLICITANTE' nome="SOLICITANTE" class="form-control campo-filter" data-action="filter"
+                                data-filters="#dev-table" placeholder="Solicitante" />
+                        </div>
+                        <div>
+                            <label for="CLIENTE">Cliente</label>
+                            <input type="text" id='CLIENTE' nome="CLIENTE" class="form-control campo-filter" data-action="filter"
+                                data-filters="#dev-table" placeholder="Cliente" />
+                        </div>
+                        <div>
+                            <label for="PROJETO">Projeto</label>
+                            <input type="text" id='PROJETO' nome="PROJETO" class="form-control campo-filter" data-action="filter"
+                                data-filters="#dev-table" placeholder="Projeto" />
+                        </div>
+                        <input type="submit" name="botao" class="botao btn btn-default btn-xs btn-filter" value="Filtrar" >
+                        <input type="submit" name="botaoVolta" class="botao btn btn-default btn-xs btn-filter" value="Voltar" >
+                    </div>
+                </form>
+            </fieldset>
+        </section>
+        <section class='container estruct'>
+            <div class="passos">
+                <div class="stepwizard">
+                    <div class="passos stepwizard-row setup-panel">
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="menuPrincipal.php" type="button" class="btn btn-success btn-circle">1</a>
+                        </div>
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="funcionario.php" type="button"  disabled='disabled' class="btn btn-default btn-circle" >2</a>
+                        </div>
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="documentacao.php" type="button"  disabled='disabled' class="btn btn-default btn-circle">3</a>
+                        </div>
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="admicao.php" type="button"  disabled='disabled' class="btn btn-default btn-circle">4</a>
+                        </div>
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="exame.php" type="button"  disabled='disabled' class="btn btn-default btn-circle" >5</a>
+                        </div>
+                        <div class="stepwizard-step col-xs-2">
+                            <a href="bancarios.php" type="button"  disabled='disabled' class="btn btn-default btn-circle" >6</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table id='first-table'>
+                <h2 id='titulo-table'></h2>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Sede</th>
+                        <th>Tipo</th>
+                        <th>Nome</th>
+                        <th>Fone</th>
+                        <th>Cargo</th>
+                        <th>Solicitante</th>
+                        <th>Remuneração Total</th>
+                        <th>Cliente</th>
+                        <th>Projeto</th>
+                        <th width='230px'>Email</th>
+                        <th>Curriculum</th>
+                        <th width='100px'></th>
+                    </tr>
+                </thead>
+                    <tbody>
+                    <?php if($resultado){
+                    while($rows_dados = mysqli_fetch_assoc($resultado)){ ?>
+                        <tr>
+                          
+                            <td><?php echo $rows_dados['STATUS']; ?></td>
+                            <td><?php echo $rows_dados['SEDE']; ?></td>
+                            <td><?php echo $rows_dados['TIPO']; ?></td>
+							<td><?php echo $rows_dados['NOME']; ?></td>
+							<td><?php echo $rows_dados['FONE_CONTATO']; ?></td>
+							<td><?php echo $rows_dados['CARGO']; ?></td>
+							<td><?php echo $rows_dados['SOLICITANTE']; ?></td>
+							<td><?php echo $rows_dados['REMUNERACAO_TOTAL']; ?></td>
+							<td><?php echo $rows_dados['CLIENTE']; ?></td>
+							<td><?php echo $rows_dados['PROJETO']; ?></td>
+							<td><?php echo $rows_dados['EMAIL']; ?></td>
+							<td></td>
+							
+                            
+                        </tr>
+                    <?php 
+                    }
+                }
+              ?>
+                    <tr>
+                        <form id='form-add' method="post" action="salva.php">
+                            <td>Nova Admissão</td>
+                            <td><select id="add-sede" class="selectadd intable"><option value="" selected="selected"></option><option value="CWB">CWB</option><option value="ERE">ERE</option><option value="PF">PF</option><option value="POA">POA</option><option value="RG">RG</option><option value="SP">SP</option><option value="FLN">FLN</option></select></td>
+                            <td><select id="add-tipo" class="selectadd intable"><option value="" selected="selected"></option><option value="CLT">CLT</option><option value="CC">CC</option><option value="HO">HO</option><option value="TEMP">TEMP</option><option value="APDZ">APDZ</option></select></td>
+                            <td id='add-nome'><input class='intable' type="text" name="nome"></td>
+                            <td id='add-fone'><input class='intable' type="tel" name="fone_contato"></td>
+                            <td id='add-cargo'><input class='intable' type="text" name="cargo"></td>
+                            <td id='add-solicitante'><input  class='intable' type="text" name="solicitante"></td>
+                            <td id='add-remuneracao'><input class='intable' type="text" name="remuneracao_total"></td>
+                            <td id='add-cliente'><input class='intable' type="text" name="cliente"></td>
+                            <td id='add-projeto'><input class='intable' type="text" name="projeto"></td>
+                            <td id='add-email'><input class='intable' type="email" name="email"></td>
+                            <td id='add-anexo'><label class="intable btn btn-default"><span class="glyphicon glyphicon-paperclip"aria-hidden="true"></span><input type="file" style="display: none;"></label></td>
+                            <td><button type="submit" value="salva" class="botao-salvar btn btn-default" action="#"><span class="glyphicon glyphicon-floppy-disk"aria-hidden="true"></span></button></td>
+                            
+                        </form>
+                    </tr>
+                </tbody>
+            </table>
+
+        </section>
+            <section class="legendas estruct">
+                <h2>Legendas</h2>
+                <table id='table-legendas'>
+                    <tr class='tb2'>
+                        <th class='tb2'>STATUS</th>
+                        <th class='tb2'>TIPO</th>
+                    </tr>
+                    <tr class='tb2'>
+                        <td class='tb2'>AGUARDAR ACEITE</td>
+                        <td class='tb2'>Aguardando o Aceite após o envio da proposta</td>
+                    </tr>
+                    <tr class='tb2'> 
+                        <td class='tb2'>FINALIZADO</td>
+                        <td class='tb2'>Admissao concluída</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>DESISTENCIA</td>
+                        <td class='tb2'>Aceitou a proposta, mas desistiu antes da admissão</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>EM ANDAMENTO</td>
+                        <td class='tb2'>Em andamento admissão</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>EM CONTRATO</td>
+                        <td class='tb2'>Em contrato, admissão concluída, pendente os envios de contrato</td>
+                    </tr>
+                    <tr class='tb2'>
+                        <td class='tb2'>EM VALIDAÇÃO</td>
+                        <td class='tb2'>Dados da proposta estão em validação antes do envio</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>RETORNO DOCS</td>
+                        <td class='tb2'>Aguardando documentos de admissão assinados pelo funcionário</td>
+                    </tr>
+                    <tr class='tb2'>
+                        <td class='tb2'>CONTATO REALIZADO</td>
+                        <td class='tb2'>Time Contratações realizou contato com o canditado para verificar se o profissional irá aceitar a proposta</td>
+                    </tr>
+                    <tr class='tb2'>
+                        <td class='tb2'>RETORNO PENDENTE</td>
+                        <td class='tb2'>Aguardando retorno do profissional do aceite da proposta</td>
+                    </tr>
+                    <tr class='tb2'>
+                        <td class='tb2'>RECUSADO</td>
+                        <td class='tb2'>Profissional recusou a proposta contratação</td>
+                    </tr>
+                </table>
+                <table class='legendas-sedes'>
+                    <tr>
+                        <th class='tb2'>SEDE</th>
+                    </tr>
+                    <tr><td class='tb2'>CWB</td></tr>
+                    <tr><td class='tb2'>ERE</td></tr>
+                    <tr><td class='tb2'>PF</td></tr>
+                    <tr><td class='tb2'>POA</td></tr>
+                    <tr><td class='tb2'>RG</td></tr>
+                    <tr><td class='tb2'>SP</td></tr>
+                    <tr><td class='tb2'>FLN</td></tr>
+                </table>
+                <table class='legendas-tipos'>
+                    <tr>
+                        <th class='tb2'>TIPO</th>
+                        <th class='tb2'>COMENTÁRIOS</th>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>CLT</td>
+                        <td class='tb2'></td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>CC</td>
+                        <td class='tb2'></td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>HO</td>
+                        <td class='tb2'>Home Office - Teletrabalho</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>TEMP</td>
+                        <td class='tb2'>Contrato por tempo determinado</td>
+                    </tr>
+                    <tr>
+                        <td class='tb2'>APDZ</td>
+                        <td class='tb2'>Aprendiz</td>
+                    </tr>
+                </table>
+            </section>
+    </main>
+    <footer>
+        <h2></h2>
+    </footer>
+    <script src="js/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/funcionamento.js"></script>
+    <script src="js/filter.js"></script>
+
+</body>
+
+</html>
